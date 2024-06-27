@@ -652,13 +652,13 @@ def pcap_parser_hsrp(fname):
             if len(hsrp) != 50:  # 20 bytes HSRP + 30 bytes for the MD5 authentication payload
                 continue
 
-            auth_type = ord(hsrp[20])
+            auth_type = hsrp[20]
             if auth_type != 4:
                 continue
 
-            h = hsrp[-16:].encode("hex")  # MD5 hash
+            h = hsrp[-16:].hex()  # MD5 hash
             # 20 bytes (HSRP) + 14 (till "keyid") + zero padding (double-check this) to make 50 bytes!
-            salt = hsrp.encode("hex")[:68] + ("\x00" * (50 - 20 - 14)).encode("hex")
+            salt = hsrp.hex()[:68] + (b"\x00" * (50 - 20 - 14)).hex()john
             print("$hsrp$%s$%s" % (salt, h))
 
     f.close()
